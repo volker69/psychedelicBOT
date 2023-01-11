@@ -1,6 +1,6 @@
 export interface IBase {
-    cdcCreateUser: string,
-    cdcUpdateUser: string,
-    cdcCreateDt: string,
-    cdcUpdateDt: string
+	cdcCreateUser: string;
+	cdcUpdateUser: string;
+	cdcCreateDt: string;
+	cdcUpdateDt: string;
 }
