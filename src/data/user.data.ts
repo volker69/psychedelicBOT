@@ -6,7 +6,6 @@ import { IResult } from "../interface/inteface.result";
 
 export class User {
 	FECHA = formatDate(new Date());
-
 	async getUsers(): Promise<IResult> {
 		try {
 			let result: any = await knex("User").select("*");
