@@ -30,7 +30,7 @@ async function getUserByIdController(
 	try {
 		const user = new User();
 		let id: any = req.params.id;
-		let result = await user.getUserById(id);
+		let result = await user.getUserById("user_id",id);
 		if (result.status) {
 			return res.status(200).json(result);
 		} else {

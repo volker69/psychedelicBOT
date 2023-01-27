@@ -15,9 +15,9 @@ export class User {
 		}
 	}
 
-	async getUserById(id: number): Promise<IResult> {
+	async getUserById(typeID:string,id: any): Promise<IResult> {
 		try {
-			let result: any = await knex("User").select("*").where("user_id", id);
+			let result: any = await knex("User").select("*").where(typeID, id);
 			if (result.length == 0) {
 				return { status: false, statusCode: 404, data: result };
 			} else {
@@ -41,7 +41,7 @@ export class User {
 	async updateUser(data: any, usr: string): Promise<IResult> {
 		try {
 			const id: any = data.user_id;
-			const currentElement: any = await this.getUserById(id);
+			const currentElement: any = await this.getUserById("user_id",id);
 			currentElement.data = "404 not found";
 			if (!currentElement.status) {
 				return { status: false, statusCode: 404, data: currentElement.data };
@@ -71,7 +71,7 @@ export class User {
 	async deleteUser(id: number): Promise<IResult> {
 		try {
 			let result: any = await knex("User").where({ user_id: id }).del();
-			const currentElement: any = await this.getUserById(id);
+			const currentElement: any = await this.getUserById("user_id",id);
 			currentElement.data = "404 not found";
 			if (!currentElement.status) {
 				return { status: false, statusCode: 404, data: currentElement.data };

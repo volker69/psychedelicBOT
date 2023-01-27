@@ -7,7 +7,7 @@ dotenv.config();
 
 const TOKEN = process.env.DISCORD_TOKEN;
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-export async function userResgister(botName: string):Promise<any> {
+export async function userResgister(botName: string): Promise<any> {
 	client.on("interactionCreate", async function (interaction: Interaction) {
 		if (!interaction.isChatInputCommand()) return;
 		if (interaction.commandName === "register") {
@@ -23,12 +23,20 @@ export async function userResgister(botName: string):Promise<any> {
 				cdcCreateUser: botName,
 				cdcUpdateUser: botName,
 			};
-			const result = await userData.postUser(userPayload);
-			if (result.status) {
-				await interaction.reply("✅ Has sido registrado con exito ");
-			} else {
-				await interaction.reply("❌ error en el registro");
-				console.error(result.data);
+			const dataExisist = await userData.getUserById(
+				"user_id_dc",
+				userPayload.user_id_dc
+			);
+			if (dataExisist.statusCode === 404) {
+				const result = await userData.postUser(userPayload);
+				if (result.status) {
+					await interaction.reply("✅ Has sido registrado con exito ");
+				} else {
+					await interaction.reply("❌ error en el registro");
+					console.error(result.data);
+				}
+			}else{
+				await interaction.reply("⚠ Ya estas registrado");
 			}
 		}
 	});
