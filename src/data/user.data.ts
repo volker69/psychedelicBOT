@@ -1,5 +1,5 @@
 //import { IUser } from "../interface/interface.user";
-import { knex } from "./conexion";
+import { knex } from "../config/conexion";
 import { formatDate } from "../helpers/helpers";
 import { IUser } from "../interface/interface.user";
 import { IResult } from "../interface/inteface.result";

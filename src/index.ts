@@ -1,20 +1,27 @@
 import app from "./app";
-import { Client, GatewayIntentBits } from "discord.js";
+import { Client, Events, GatewayIntentBits } from "discord.js";
 import * as dotenv from "dotenv";
-import { userResgister } from "./service/discord.service";
+import { RegisterCmd } from "./command/register";
+import { DiscordServices } from "./service/discord.service";
+
+import './config/mongo.conexion';
+
 
 dotenv.config();
-const TOKEN = process.env.DISCORD_TOKEN;
-const client: any = new Client({ intents: [GatewayIntentBits.GuildPresences] });
-
- client.on('ready', async () => {
-    console.log(`Logged como  ${client.user.tag}!`);
-    let botName:string = client.user.tag;
-    await userResgister(botName);
-
+const TOKEN:string = `${process.env.DISCORD_TOKEN}`;
+const client: any = new Client({ intents: [GatewayIntentBits.GuildPresences,GatewayIntentBits.Guilds] });
+const registerCmd = new RegisterCmd();
+const serviceDC = new DiscordServices();
+ client.once(Events.ClientReady, async (c:any) => {
+   console.log(`🟢 bot iniciado como ${c.user.tag}!`);
+   await registerCmd.RegisterBuidCommands();
+   await registerCmd.ResgisterAdmin();
+   await serviceDC.reactionRegister(c.user.tag);
+   //await reactionRegister(`${c.user.tag}`);
 });
 
-console.log(`THE SERVER IS RUNNING IN PORT : ${app.get("port")}`);
+
+console.log(`🚀 EL SERVIDOR ESTA CORRIENDO EN EL PUERTO : ${app.get("port")}`);
 app.listen(app.get("port"));
 
 client.login(TOKEN);
