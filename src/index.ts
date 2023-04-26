@@ -13,11 +13,11 @@ const client: any = new Client({ intents: [GatewayIntentBits.GuildPresences,Gate
 const registerCmd = new RegisterCmd();
 const serviceDC = new DiscordServices();
  client.once(Events.ClientReady, async (c:any) => {
-   console.log(`🟢 bot iniciado como ${c.user.tag}!`);
-   await registerCmd.RegisterBuidCommands();
-   await registerCmd.ResgisterAdmin();
-   await serviceDC.reactionRegister(c.user.tag);
-   //await reactionRegister(`${c.user.tag}`);
+  console.log(`🟢 bot iniciado como ${c.user.tag}!`);
+  await registerCmd.RegisterBuidCommands();
+  await registerCmd.ResgisterAdmin();
+  await serviceDC.reactionRegister(c.user.tag);
+  await serviceDC.welcomeServer();
 });
 
 

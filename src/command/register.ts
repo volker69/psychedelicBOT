@@ -31,8 +31,7 @@ export class RegisterCmd {
                     name: "userid",
                     description: "Ingresa el userID",
                     required: true,
-                },
-
+                }
             ],
 		},
 	];
@@ -46,7 +45,7 @@ export class RegisterCmd {
 
             console.log(`✅ Comando ${this.commands[0].name} registrado con exito`);
         } catch (error) {
-             console.error(`❌ Error al registrar el comando : ${this.commands[0].name} `);
+            console.error(`❌ Error al registrar el comando : ${this.commands[0].name} `);
             console.error(error);
         }
     }

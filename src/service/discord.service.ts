@@ -1,5 +1,18 @@
 import * as dotenv from "dotenv";
-import { Client, Collection, Emoji, GatewayIntentBits, GuildMember, MessageReaction, PartialMessageReaction, PartialUser, Partials, Snowflake, User } from "discord.js";
+import { 
+		Client,
+		Collection,
+		Emoji,
+		GatewayIntentBits,
+		GuildMember,
+		MessageReaction,
+		PartialMessageReaction,
+		PartialUser,
+		Partials,
+		Snowflake,
+		User,
+		EmbedBuilder
+	} from "discord.js";
 import { CONSTANTS } from "../config/constants";
 import * as UserData from "../data/user.data";
 import { IUser } from "../interface/interface.user";
@@ -54,8 +67,6 @@ export class DiscordServices{
 			const roleId = CONSTANTS.DISCORD_ROLES_ID.USERS;
 			console.log(`El emoji que es uso es ${emoji}`);
 			if (reaction.message.id === mensajeID && strEmoji == "👍") {
-				
-				console.log(`El emoji que es uso es ${emoji}`);
 				const guild:any = reaction.message.guild;
 				const member = await guild.members.fetch(user.id);
 				const role = guild.roles.cache.get(roleId);
@@ -81,19 +92,20 @@ export class DiscordServices{
 					"user_id_dc",
 					userPayload.user_id_dc
 				);
+				const sendMsj:any = reaction.message.channel;
 				if (dataExisist.statusCode === 404) {
 					const result = await userData.postUser(userPayload);
 					if (result.status) {
 						console.log(`✅ ${user.username}#${user.deleteDM}, has sido registrado con éxito.`);
-						await reaction.message.channel.send(`✅ Has sido registrado con exito  `);
+						await sendMsj.send(`✅ Has sido registrado con exito  `);
 					} else {
 						console.log("❌ error en el registro");
-						await reaction.message.channel.send(`❌ error en el registro"`);
+						await sendMsj.send(`❌ error en el registro"`);
 						console.error(result.data);
 					}
 				} else {
 					console.log("⚠ Ya estas registrado");
-					await reaction.message.channel.send(`⚠ Ya estas registrado`);
+					await sendMsj.send(`⚠ Ya estas registrado`);
 
 					
 				}
@@ -107,14 +119,29 @@ export class DiscordServices{
 		this.client.login(this.TOKEN);
 	}
 
-	async getAllMembers(serverId: string): Promise<Collection<Snowflake, GuildMember>> {
-		// Obtiene el objeto Guild (servidor) utilizando el ID proporcionado.
-		const guild = await this.client.guilds.fetch(serverId);
-	
-		// Fetch all members from the guild.
-		const members = await guild.members.fetch();
-	
-		return members;
+	async welcomeServer(){
+		this.client.on('guildMemberAdd',(member:GuildMember)=>{
+			const welcomeEmbed = new EmbedBuilder()
+				.setTitle(`Bienvenido ${member.user.username}`)
+				.setDescription(`¡Bienvenido a esta cagada de servidor, ${member}! `)
+				.setColor('Green')
+				.setThumbnail(member.user.displayAvatarURL({size:128}));
+
+			if (member.guild.banner) {
+				welcomeEmbed.setDescription(
+					`¡Bienvenido a nuestro servidor, ${member}!\n\n${member.guild.name} tiene un banner de servidor:\n${member.guild.bannerURL()}`
+				);
+				}
+			
+				const welcomeChannel:any = member.guild.channels.cache.find(
+				(channel) => channel.name === '🏠welcome'
+				);
+			
+				if (welcomeChannel) {
+				welcomeChannel.send({ embeds: [welcomeEmbed] });
+				}
+
+		})
 	}
 
 }
