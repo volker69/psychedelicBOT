@@ -1,7 +1,6 @@
 import * as dotenv from "dotenv";
 import { 
 		Client,
-		Collection,
 		Emoji,
 		GatewayIntentBits,
 		GuildMember,
@@ -9,7 +8,6 @@ import {
 		PartialMessageReaction,
 		PartialUser,
 		Partials,
-		Snowflake,
 		User,
 		EmbedBuilder
 	} from "discord.js";
@@ -125,6 +123,7 @@ export class DiscordServices{
 				.setTitle(`Bienvenido ${member.user.username}`)
 				.setDescription(`¡Bienvenido a esta cagada de servidor, ${member}! `)
 				.setColor('Green')
+				.setImage('https://usagif.com/wp-content/uploads/2021/4fh5wi/troll-face-44.gif')
 				.setThumbnail(member.user.displayAvatarURL({size:128}));
 
 			if (member.guild.banner) {
