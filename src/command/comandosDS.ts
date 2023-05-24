@@ -1,13 +1,13 @@
 import { ApplicationCommandOptionType, Client,  GatewayIntentBits, Interaction,  Partials, REST, Routes, User } from "discord.js";
 import { ICommand } from "../interface/interface.command";
-import * as UserData from "../data/user.data";
 import * as dotenv from "dotenv";
+import { PrismaClient } from "@prisma/client";
 import { IUser } from "../interface/interface.user";
 import { CONSTANTS } from "../config/constants";
 dotenv.config();
 
 
-export class RegisterCmd {
+export class ComandosDS {
     private TOKEN: any = process.env.DISCORD_TOKEN;
     private server_id: any = process.env.DC_SERVER_ID;
 	private CLIENT_ID: any = process.env.CLIENT_ID;
@@ -34,6 +34,10 @@ export class RegisterCmd {
                 }
             ],
 		},
+        {
+            name:"rules",
+            description:"Generar Reglas",
+        },
 	];
     
     async RegisterBuidCommands() {
@@ -43,11 +47,40 @@ export class RegisterCmd {
 				body: this.commands,
 			});
 
-            console.log(`✅ Comando ${this.commands[0].name} registrado con exito`);
+            for (let index = 0; index < this.commands.length; index++) {
+                console.log(`✅ Comando ${this.commands[index].name} registrado con exito`);
+                
+            }
         } catch (error) {
             console.error(`❌ Error al registrar el comando : ${this.commands[0].name} `);
             console.error(error);
         }
+    }
+
+    
+    async sendRules():Promise<any>{
+        this.client.on('interactionCreate',async (interaction:Interaction): Promise<any> =>{
+            try {
+                if (!interaction.isChatInputCommand()) return;
+                const guild:any = this.client.guilds.cache.get(this.server_id);
+                const userDc: User = interaction.user;
+                const member = await guild.members.fetch(userDc.id);
+                console.log("Estoy aqui");
+                if (interaction.commandName == this.commands[1].name) {
+                    if (member.roles.cache.has(CONSTANTS.DISCORD_ROLES_ID.ROOT)) {
+                        const channel: any = this.client.channels.cache.get(
+                            CONSTANTS.DISCORD_CHANNELS_ID.RULES
+                        );
+                        const msj = await  channel.send(CONSTANTS.MESSAGES.RULES);
+                        await msj.react("👍");
+                    }else{
+                        await interaction.reply(`⚠ No tienes permisos para usar este comando`);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        })
     }
 
     async ResgisterAdmin(): Promise<any> {
@@ -56,8 +89,9 @@ export class RegisterCmd {
             try {
                 if (!interaction.isChatInputCommand()) return;
                 const guild:any = this.client.guilds.cache.get(this.server_id);
-				if (interaction.commandName === "register") {
-                    const userData = new UserData.User();
+				if (interaction.commandName === this.commands[0].name) {
+                    const prisma = new PrismaClient();
+                    const todayDate = new Date();
                     const userDc: User = interaction.user;
                     const userNick = interaction.options.getString("nickname");
                     const userId = interaction.options.getString("userid")
@@ -67,8 +101,8 @@ export class RegisterCmd {
                         user_name: `${userNick}`,
                         user_note: "",
                         user_token: "",
-                        cdcCreateDt: userData.FECHA,
-                        cdcUpdateDt: userData.FECHA,
+                        cdcCreateDt: todayDate,
+                        cdcUpdateDt: todayDate,
                         cdcCreateUser: `${userDc.username}#${userDc.discriminator}`,
                         cdcUpdateUser: `${userDc.username}#${userDc.discriminator}`
                     };
@@ -77,21 +111,25 @@ export class RegisterCmd {
                     let isMember = member.roles.cache.has(CONSTANTS.DISCORD_ROLES_ID.ROOT)
                         ? true
                         : false;
-                    if (isMember) {
-                        const dataExisist = await userData.getUserById(
-                            "user_id_dc",
-                            userPayload.user_id_dc
-                        );
-                        if (dataExisist.statusCode === 404) {
-                            const result = await userData.postUser(userPayload);
-                            if (result.status) {
-                                await interaction.reply(`✅ Has el usuario ${userPayload.user_name} ha sido registrado con exito `);
-                            } else {
+                    if (isMember) {                        
+                        const dataExisist = await prisma.user.findFirst({
+                            where: {
+                                user_id_dc: userPayload.user_id_dc,
+                            },
+                        });
+                        try {
+                                if (dataExisist === null) {
+                                    const result = await prisma.user.create({
+                                        data:userPayload
+                                    }); 
+                                    await interaction.reply(`✅ Has el usuario ${userPayload.user_name} ha sido registrado con exito `);
+                                    console.log(`Se ha creado usario desde la linia de comandos ${result}`);
+                                } else {
+                                    await interaction.reply(`⚠ el usuario **${userPayload.user_name}**  ya se encuentra registrado`);
+                                }
+                            } catch (error) {
                                 await interaction.reply("❌ error en el registro");
-                                console.error(result.data);
-                            }
-                        } else {
-                            await interaction.reply(`⚠ el usuario **${userPayload.user_name}**  ya se encuentra registrado`);
+                                console.error(error);
                         }
                     } else {
                         await interaction.reply(`⚠ No tienes permisos para usar este comando`);
