@@ -1,31 +1,29 @@
-export namespace CONSTANTS{
-    export enum DISCORD_ROLES_ID{
-        ROOT='1080873745905881177',
-        VIP='1080873745905881176',
-        VIPH='1080873745905881175',
-        EDITOR='1080873745905881174',
-        STREAMER='1080873745905881173',
-        USERS='1080873745905881172',
-        MODERADORS='1080873745905881170'
-    }
+export namespace CONSTANTS {
+	export enum DISCORD_ROLES_ID {
+		ROOT = "1080873745905881177",
+		VIP = "1080873745905881176",
+		VIPH = "1080873745905881175",
+		EDITOR = "1080873745905881174",
+		STREAMER = "1080873745905881173",
+		USERS = "1080873745905881172",
+		MODERADORS = "1080873745905881170",
+	}
 
-    export const TWICH_CHANNELS = [
-        'psychedelic_humor'
-    ]
+	export const TWICH_CHANNELS = ["psychedelic_humor"];
 
-    export enum DISCORD_CHANNELS_ID{
-        RULES='1080873746929299567',
-        WELCOME='1080873746929299568',
-        GENERAL='1080873746929299571',
-        STREAM='1080873746929299572',
-    }
+	export enum DISCORD_CHANNELS_ID {
+		RULES = "1111161901561417738",
+		WELCOME = "1080873746929299568",
+		GENERAL = "1080873746929299571",
+		STREAM = "1080873746929299572",
+	}
 
-    export enum DISCORD_MESSAGE_ID{
-        REGLAS='1108606878642077748',
-    }
+	export enum DISCORD_MESSAGE_ID {
+		REGLAS = "1111162781723525131",
+	}
 
-    export enum MESSAGES{
-        RULES=`¡Bienvenidos @everyone a psychedelic_humor! Nos alegra que seas parte de nuestra comunidad. Para garantizar un ambiente amigable y respetuoso, te pedimos que te tomes un momento para familiarizarte con nuestro reglamento.
+	export enum MESSAGES {
+		RULES = `¡Bienvenidos @everyone a psychedelic_humor! Nos alegra que seas parte de nuestra comunidad. Para garantizar un ambiente amigable y respetuoso, te pedimos que te tomes un momento para familiarizarte con nuestro reglamento.
             
         Este servidor es un espacio creado para ti y para compartir entre todos, por lo que es fundamental el respeto mutuo.
         
@@ -55,6 +53,6 @@ export namespace CONSTANTS{
         
         Apreciamos tu cooperación y esperamos que disfrutes tu tiempo aquí.
         
-        Atte: La Administración`
-    }
+        Atte: La Administración`,
+	}
 }
