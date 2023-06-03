@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ChannelTwich {
+  channel_id         Int       @id @default(autoincrement())
+  ChannelTwich_name  String    @db.VarChar(50)
+  cannel_count_views Int?
+  cdcCreateDt        DateTime? @db.Date
+  cdcCreateUser      String?   @db.VarChar(100)
+  cdcUpdateUser      String?   @db.VarChar(100)
+  cdcUpdateDt        DateTime? @db.Date
+}
+
+model ChannelDC {
+  channelDc_id    Int       @id @default(autoincrement())
+  server_id_fk    Int
+  channelDc_id_dc String?   @db.VarChar(100)
+  channelDc_name  String    @db.VarChar(50)
+  cdcCreateDt     DateTime? @db.Date
+  cdcCreateUser   String?   @db.VarChar(100)
+  cdcUpdateUser   String?   @db.VarChar(100)
+  cdcUpdateDt     DateTime? @db.Date
+  Server          ServerDc  @relation(fields: [server_id_fk], references: [server_id], onDelete: Cascade, map: "SERVER_ID_FK")
+
+  @@index([server_id_fk], map: "SERVER_ID_FK")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Rol {
+  rol_id        Int       @id @default(autoincrement())
+  server_id_fk  Int
+  rol_id_dc     String?   @db.VarChar(100)
+  rol_name      String    @db.VarChar(50)
+  rol_previlage Json
+  cdcCreateDt   DateTime? @db.Date
+  cdcCreateUser String?   @db.VarChar(100)
+  cdcUpdateUser String?   @db.VarChar(100)
+  cdcUpdateDt   DateTime? @db.Date
+  Server        ServerDc  @relation(fields: [server_id_fk], references: [server_id], onDelete: Cascade, map: "SERV_ID_FK")
+
+  @@index([server_id_fk], map: "SERV_ID_FK")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ServerDc {
+  server_id     Int            @id @default(autoincrement())
+  server_id_dc  String?        @db.VarChar(100)
+  server_name   String         @db.VarChar(50)
+  cdcCreateDt   DateTime?      @db.Date
+  cdcCreateUser String?        @db.VarChar(100)
+  cdcUpdateUser String?        @db.VarChar(100)
+  cdcUpdateDt   DateTime?      @db.Date
+  Rol           Rol[]
+  ChannelDc     ChannelDC[]
+  UserServerDc  UserServerDc[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model User {
+  user_id       Int            @id @default(autoincrement())
+  user_id_dc    String?        @db.VarChar(100)
+  user_name     String         @db.VarChar(50)
+  user_token    String?        @db.VarChar(250)
+  user_note     String?        @db.VarChar(250)
+  cdcCreateDt   DateTime?      @db.Date
+  cdcCreateUser String?        @db.VarChar(100)
+  cdcUpdateUser String?        @db.VarChar(100)
+  cdcUpdateDt   DateTime?      @db.Date
+  UserServerDc  UserServerDc[]
+}
+
+model UserServerDc {
+  userServ_id   Int       @id @default(autoincrement())
+  user_id_fk    Int
+  server_id_fk  Int
+  cdcCreateDt   DateTime? @db.Date
+  cdcCreateUser String?   @db.VarChar(100)
+  cdcUpdateUser String?   @db.VarChar(100)
+  cdcUpdateDt   DateTime? @db.Date
+  ServerDc      ServerDc  @relation(fields: [server_id_fk], references: [server_id], onDelete: Cascade, map: "ServerDc_FK")
+  User          User      @relation(fields: [user_id_fk], references: [user_id], onDelete: Cascade, map: "USER_FK")
+
+  @@index([server_id_fk], map: "ServerDc_FK")
+  @@index([user_id_fk], map: "USER_FK")
+}

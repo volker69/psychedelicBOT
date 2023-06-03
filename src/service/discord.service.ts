@@ -12,6 +12,7 @@ import {
 	User,
 	EmbedBuilder,
 	TextChannel,
+	Guild,
 } from "discord.js";
 import { CONSTANTS } from "../config/constants";
 import axios from "axios";
@@ -37,6 +38,30 @@ export class DiscordServices {
 			const canalTxtDs = CONSTANTS.DISCORD_CHANNELS_ID.RULES;
 			const tokenTws: string = `${process.env.TWITCH_TOKEN}`;
 			this.sendLiveNotification(canalTxtDs, canalTws, clientID, tokenTws);
+		});
+	}
+
+	async getActivitiServer() {
+		this.client.on("ready", () => {
+			const countGuilds = this.client.guilds.cache;
+			if (this.client.guilds.cache.size === 0) {
+				console.log(
+					`⚠ El BOT no esta conectado a ningun servidor =>${Object.values(
+						countGuilds
+					)}`
+				);
+				return;
+			}
+
+			this.client.guilds.cache.forEach((guild: Guild) => {
+				//Registrar los Server que estan activos con el BOT
+				/*
+				CODE NUKE
+				*/
+				console.log(
+					`EL bot esta activo en el servidor: ${guild.name} ID:${guild.id}`
+				);
+			});
 		});
 	}
 
