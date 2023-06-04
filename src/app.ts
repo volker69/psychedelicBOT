@@ -12,6 +12,7 @@ const app = express();
  */
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+console.log("Wena los K ");
 app.set("port", process.env.NODE_PORT);
 
 /**
