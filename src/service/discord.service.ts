@@ -16,6 +16,7 @@ import {
 } from "discord.js";
 import { CONSTANTS } from "../config/constants";
 import axios from "axios";
+import { IServer } from "../interface/interface.server";
 
 dotenv.config();
 
@@ -41,27 +42,39 @@ export class DiscordServices {
 		});
 	}
 
-	async getActivitiServer() {
-		this.client.on("ready", () => {
-			const countGuilds = this.client.guilds.cache;
-			if (this.client.guilds.cache.size === 0) {
-				console.log(
-					`⚠ El BOT no esta conectado a ningun servidor =>${Object.values(
-						countGuilds
-					)}`
-				);
-				return;
-			}
-
-			this.client.guilds.cache.forEach((guild: Guild) => {
-				//Registrar los Server que estan activos con el BOT
-				/*
-				CODE NUKE
-				*/
-				console.log(
-					`EL bot esta activo en el servidor: ${guild.name} ID:${guild.id}`
-				);
+	async registerServers(botName: string) {
+		this.client.on("guildCreate", async (guild: Guild) => {
+			const payload: IServer = {
+				server_id_dc: guild.id,
+				server_name: guild.name,
+				cdcCreateDt: new Date(),
+				cdcUpdateDt: new Date(),
+				cdcUpdateUser: botName,
+				cdcCreateUser: botName,
+			};
+			const prisma = new PrismaClient();
+			const dataExist = await prisma.serverDc.findFirst({
+				where: {
+					server_id_dc: payload.server_id_dc,
+				},
 			});
+
+			try {
+				if (dataExist === null) {
+					const result = await prisma.serverDc.create({
+						data: payload,
+					});
+					console.log(
+						`Server creado \n id:${result.server_id} \n name= ${result.server_name}`
+					);
+				} else {
+					console.log(
+						`Server ya registrado m fue creado el ${dataExist.cdcCreateDt} por ${dataExist.cdcCreateUser}`
+					);
+				}
+			} catch (error) {
+				console.error(`Error en la cracion , detalle: \n ${error}`);
+			}
 		});
 	}
 
