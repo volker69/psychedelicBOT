@@ -42,6 +42,27 @@ export class DiscordServices {
 		});
 	}
 
+	async deleteServers(){
+		this.client.on("guildDelete",async (guild:Guild) => {			
+			console.log(`El bot ha sido expulsado del servidor ${guild.name} (${guild.id})`);
+			try {
+				const prisma = new PrismaClient();
+				const borrarServer = await prisma.serverDc.deleteMany({
+					where:{
+						server_id_dc : guild.id,
+					}
+				});
+				console.log('Información de los servidores eliminada:', borrarServer.count);
+				
+			} catch (error) {
+				console.error('Error al eliminar información de los servidores en la base de datos:', error);
+			}
+		});
+		this.client.login(this.TOKEN);
+		
+	}
+	
+
 	async registerServers(botName: string) {
 		this.client.on("guildCreate", async (guild: Guild) => {
 			const payload: IServer = {
