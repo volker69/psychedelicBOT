@@ -82,6 +82,7 @@ export class ComandosDS {
             }
         })
     }
+    
 
     async ResgisterAdmin(): Promise<any> {
         

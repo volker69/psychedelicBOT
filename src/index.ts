@@ -24,6 +24,7 @@ client.once(Events.ClientReady, async (c: any) => {
 	await serviceDC.welcomeServer();
 	await serviceDC.alertLive();
 	await serviceDC.registerServers(c.user.tag);
+	//await serviceDC.deleteServers
 });
 console.log(`🚀 EL SERVIDOR ESTA CORRIENDO EN EL PUERTO : ${app.get("port")}`);
 app.listen(app.get("port"));
