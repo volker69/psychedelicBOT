@@ -83,6 +83,23 @@ export class ComandosDS {
         })
     }
 
+    /*
+    async RegisterServer():Promise<any>{
+        this.client.on("interactionCreate",async(interaction:Interaction)=>{
+            try {
+                if(!interaction.isChatInputCommand()) return;
+                const guild:any = this.client.guilds.cache.get(this.server_id);
+                if (interaction.commandName === this.commands[0].name){
+                    const prisma = new PrismaClient();
+                    const todayDate = new Date();
+                    
+
+                }
+            }
+        })
+    }
+    */
+
     async ResgisterAdmin(): Promise<any> {
         
         this.client.on("interactionCreate", async (interaction: Interaction)=> {
