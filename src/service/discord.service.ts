@@ -32,8 +32,8 @@ export class DiscordServices {
 
 	private TOKEN = process.env.DISCORD_TOKEN;
 
-	async alertLive() {
-		this.client.on("ready", async (): Promise<any> => {
+	async alertLive(): Promise<void> {
+		this.client.on("ready", async () => {
 			const clientID: string = `${process.env.TWITCH_CLIENT_ID}`;
 			const canalTws = "psychedelic_humor";
 			const canalTxtDs = CONSTANTS.DISCORD_CHANNELS_ID.RULES;
@@ -42,28 +42,30 @@ export class DiscordServices {
 		});
 	}
 
-	async deleteServers(){
-		this.client.on("guildDelete",async (guild:Guild) => {			
-			console.log(`El bot ha sido expulsado del servidor ${guild.name} (${guild.id})`);
+	async deleteServers(): Promise<void> {
+		this.client.on("guildDelete", async (guild: Guild) => {
+			console.log(
+				`El bot ha sido expulsado del servidor ${guild.name} (${guild.id})`
+			);
 			try {
 				const prisma = new PrismaClient();
 				const borrarServer = await prisma.serverDc.deleteMany({
-					where:{
-						server_id_dc : guild.id,
-					}
+					where: {
+						server_id_dc: guild.id,
+					},
 				});
-				console.log('Información de los servidores eliminada:', borrarServer.count);
-				
+				console.log("Información de los servidores eliminada:", borrarServer.count);
 			} catch (error) {
-				console.error('Error al eliminar información de los servidores en la base de datos:', error);
+				console.error(
+					"Error al eliminar información de los servidores en la base de datos:",
+					error
+				);
 			}
 		});
 		this.client.login(this.TOKEN);
-		
 	}
-	
 
-	async registerServers(botName: string) {
+	async registerServers(botName: string): Promise<void> {
 		this.client.on("guildCreate", async (guild: Guild) => {
 			const payload: IServer = {
 				server_id_dc: guild.id,
@@ -99,7 +101,7 @@ export class DiscordServices {
 		});
 	}
 
-	async reactionRegister(botname: string) {
+	async reactionRegister(botname: string): Promise<void> {
 		this.client.on(
 			"messageReactionAdd",
 			async (
@@ -168,7 +170,7 @@ export class DiscordServices {
 		this.client.login(this.TOKEN);
 	}
 
-	async welcomeServer() {
+	async welcomeServer(): Promise<void> {
 		this.client.on("guildMemberAdd", (member: GuildMember) => {
 			const welcomeEmbed = new EmbedBuilder()
 				.setTitle(`Bienvenido ${member.user.username}`)
@@ -224,7 +226,7 @@ export class DiscordServices {
 		TwitchChannel: string,
 		clientId: string,
 		accessToken: string
-	) {
+	): Promise<void> {
 		const channel = this.client.channels.cache.get(channelID) as TextChannel;
 
 		if (!channel) {
