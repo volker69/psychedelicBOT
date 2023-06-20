@@ -20,11 +20,12 @@ client.once(Events.ClientReady, async (c: any) => {
 	await comandoDs.RegisterBuidCommands();
 	await comandoDs.ResgisterAdmin();
 	await comandoDs.sendRules();
+	await comandoDs.registerChannel();
 	await serviceDC.reactionRegister(c.user.tag);
 	await serviceDC.welcomeServer();
 	await serviceDC.alertLive();
 	await serviceDC.registerServers(c.user.tag);
-	await serviceDC.deleteServers()
+	await serviceDC.deleteServers();
 });
 console.log(`🚀 EL SERVIDOR ESTA CORRIENDO EN EL PUERTO : ${app.get("port")}`);
 app.listen(app.get("port"));
